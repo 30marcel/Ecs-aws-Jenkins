@@ -1,29 +1,32 @@
 pipeline {
     agent any
-    environment{
-      DOCKERHUB_CREDENTIALS = credentials('docker-creds')
-    }
+
     stages {
         stage('Build') {
             steps {
-                sh 'docker build -t melong123/webapp:1.0.2 .'
+                sh 'docker build -t marecl:latest .'
             }
         }
-        stage('Login') {
+
+        stage('Login to ECR') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                withCredentials([usernamePassword(credentialsId: 'Demo-ecs', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh 'eval $(aws ecr get-login --no-include-email --region us-east-2)'
+                }
             }
         }
-        stage('Push') {
+
+        stage('Push to ECR') {
             steps {
-                sh 'docker push melong123/webapp:1.0.2'
+                sh 'docker tag marecl:latest 176039391845.dkr.ecr.us-east-2.amazonaws.com/marecl:latest'
+                sh 'docker push 176039391845.dkr.ecr.us-east-2.amazonaws.com/marecl:latest'
             }
         }
-        stage('Logout') {
+
+        stage('Logout from ECR') {
             steps {
-                sh 'docker logout'
+                sh 'docker logout 176039391845.dkr.ecr.us-east-2.amazonaws.com'
             }
         }
     }
 }
-
