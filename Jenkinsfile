@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'docker build -t marecl:latest .'
+                sh 'whoami && docker build -t marecl:latest .'
             }
         }
 
