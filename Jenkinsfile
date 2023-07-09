@@ -4,13 +4,13 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'whoami && docker build -t marecl:latest .'
+                sh 'docker build -t coolweb:1.0.1 .'
             }
         }
 
         stage('Login to ECR') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'Demo-ecs', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                withCredentials([usernamePassword(credentialsId: 'Demo-coolweb', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh 'eval $(aws ecr get-login --no-include-email --region us-east-2)'
                 }
             }
@@ -18,8 +18,8 @@ pipeline {
 
         stage('Push to ECR') {
             steps {
-                sh 'docker tag marecl:latest 176039391845.dkr.ecr.us-east-2.amazonaws.com/marecl:latest'
-                sh 'docker push 176039391845.dkr.ecr.us-east-2.amazonaws.com/marecl:latest'
+                sh 'docker tag coolweb:1.0.1 176039391845.dkr.ecr.us-east-2.amazonaws.com/web-app/coolweb:1.0.1'
+                sh 'docker push 176039391845.dkr.ecr.us-east-2.amazonaws.com/web-app/coolweb:1.0.1'
             }
         }
 
