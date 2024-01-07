@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'docker build -t 217511887881.dkr.ecr.us-east-1.amazonaws.com/web-app:1.0.2 .'
+                sh 'docker build -t my-ecr-repo'
             }
         }
 
@@ -18,7 +18,7 @@ pipeline {
 
         stage('Push to ECR') {
             steps {
-                sh 'docker push 217511887881.dkr.ecr.us-east-1.amazonaws.com/web-app:1.0.2'
+                sh 'docker push 217511887881.dkr.ecr.us-east-1.amazonaws.com/my-ecr-repo:latest'
             }
         }
 
